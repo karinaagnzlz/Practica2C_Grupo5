@@ -1,22 +1,62 @@
-#!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
 import sys
 
+from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager, Shell, Server
 
-def main():
-    """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cn_p2_simple_ws.settings')
-    try:
-        from django.core.management import execute_from_command_line
-    except ImportError as exc:
-        raise ImportError(
-            "Couldn't import Django. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
-        ) from exc
-    execute_from_command_line(sys.argv)
+from app import create_app, db
+from app.models import (
+    User,
+)
+
+env = os.environ["KAKA_ENV"]
+app = create_app(env)
+manager = Manager(app)
+migrate = Migrate(app, db)
+
+manager.add_command("runserver", Server(port=5000))
 
 
-if __name__ == '__main__':
-    main()
+def make_shell_context():
+    return dict(
+        app=app,
+        db=db,
+        User=User,
+    )
+
+
+@manager.command
+def test():
+    """Run the unit tests."""
+    import unittest
+
+    tests = unittest.TestLoader().discover("tests")
+    unittest.TextTestRunner(verbosity=2).run(tests)
+
+
+@manager.command
+def seed():
+    db.session.commit()
+
+@manager.command
+def urlmap():
+    """Print url map."""
+    print(app.url_map)
+
+manager.add_command("shell", Shell(make_context=make_shell_context))
+manager.add_command("db", MigrateCommand)
+
+app.port = 5000
+app.host = "0.0.0.0"
+app.debug = True
+
+if __name__ == "__main__":
+    def my_handler(type, value, tb):
+        app.logger.error("Uncaught exception: {0}".format(str(value)))
+
+
+    # Install exception handler
+    sys.excepthook = my_handler
+    manager.run()

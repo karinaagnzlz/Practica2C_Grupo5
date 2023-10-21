@@ -1,34 +1,18 @@
-#!/usr/bin/python
-
-from setuptools import setup
-from setuptools import find_packages
-
-
-def get_version():
-    with open("cn_p2_simple_ws/__init__.py") as f:
-        for line in f:
-            if line.startswith("__version__"):
-                return eval(line.split("=")[-1])
-
-
-def get_requires():
-    requirements_list = []
-    with open("requirements.txt") as f:
-        for line in f:
-            requirements_list.append(line)
-    return requirements_list
-
-
-with open("README.md", "r") as readme_file:
-    readme = readme_file.read()
+from setuptools import setup, find_packages
 
 setup(
-    name="cn_p2_simple_ws",
-    version=get_version(),
-    description="cn_p2_simple_ws",
-    long_description=readme,
-    author="Rómulo Rodríguez",
+    # Application name:
+    name="flask-docker",
+    # Version number:
+    version="1.0.0",
+    # Application author details:
+    author="Enrique Garcia",
+    author_email="nitos_san@hotmail.com",
+    # Packages
     packages=find_packages(),
-    install_requires=get_requires(),
+    # Include additional files into the package
     include_package_data=True,
+    # Details
+    url="https://github.com/enriquedevs/flask-docker",
+    description="Flask API with PostgreSQL and Docker",
 )
