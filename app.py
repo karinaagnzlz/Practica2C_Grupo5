@@ -1,26 +1,32 @@
-from flask import Flask
-from flask_cors import CORS
-
-from config import config
-
-# Routes
-from routes import Movie
+from flask import Flask, request, jsonify, make_response
+from flask_sqlalchemy import SQLAlchemy
+from os import environ
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
+db = SQLAlchemy(app)
 
-CORS(app, resources={"*": {"origins": "http://localhost:9300"}})
+
+# Creando la migracion
+class User(db.Model):
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, auto_created=True, primary_key=True, serialize=False)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def json(self):
+        return {'id': self.id,'name': self.name, 'email': self.email}
+
+db.create_all()
 
 
-def page_not_found(error):
-    return "<h1>Not found page</h1>", 404
+# Ruta de ejemplo
+@app.route('/status', methods=['GET'])
+def test():
+  return make_response(jsonify({'response': 'pong'}), 200)
+
 
 
 if __name__ == '__main__':
-    app.config.from_object(config['development'])
-
-    # Blueprints
-    app.register_blueprint(Movie.main, url_prefix='/api/movies')
-
-    # Error handlers
-    app.register_error_handler(404, page_not_found)
-    app.run()
+    app.run(debug=True, host='0.0.0.0', port=5000)
