@@ -4,6 +4,12 @@ FROM python:3.9
 # Establece el directorio de trabajo
 WORKDIR /app
 
+# Crear un entorno virtual
+RUN python -m venv venv
+
+# Activar el entorno virtual y luego instalar las dependencias
+RUN . venv/bin/activate && pip install -r requirements.txt
+
 # Copia los archivos de la aplicación
 COPY . .
 
