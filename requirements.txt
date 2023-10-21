@@ -1,0 +1,5 @@
+Flask==2.1.1  # La versión puede variar
+Werkzeug==2.0.2
+Flask-RESTful==0.3.10  # Flask-RESTful para la creación de servicios REST
+psycopg2-binary==2.9.1  # Para interactuar con PostgreSQL desde Flask
+SQLAlchemy==1.4.22  # Una biblioteca ORM para trabajar con bases de datos
