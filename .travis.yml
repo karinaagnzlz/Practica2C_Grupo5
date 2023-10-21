@@ -1,0 +1,25 @@
+sudo: false
+
+services:
+  - mongodb
+
+addons:
+  apt:
+    sources:
+    - mongodb-3.2-precise
+    packages:
+    - mongodb-org-server
+
+language: python
+
+python:
+  - "2.7"
+
+env:
+  BASE_URL: localhost:8000
+
+before_script:
+  - "pip install -r requirements.txt"
+
+script:
+  - "(nohup gunicorn -b localhost:8000 manage:app &) && sleep 3 && behave"
