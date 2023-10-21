@@ -3,20 +3,20 @@ FROM python:3.12-slim as build
 RUN apt-get update -y \
     && apt-get install -y build-essential libpq-dev git \
     && pip install virtualenv \
-    && virtualenv /opt/cn_p2_simple_ws/venv \
-    && . /opt/cn_p2_simple_ws/venv/bin/activate \
+    && virtualenv /opt/practica2c_grupo5/venv \
+    && . /opt/practica2c_grupo5/venv/bin/activate \
     && pip install gunicorn
 
-COPY . /cn_p2_simple_ws
+COPY . /practica2c_grupo5
 
-WORKDIR /cn_p2_simple_ws
+WORKDIR /practica2c_grupo5
 
-RUN . /opt/cn_p2_simple_ws/venv/bin/activate \
+RUN . /opt/practica2c_grupo5/venv/bin/activate \
     && pip install .
 
 FROM python:3.12-slim
 
-COPY --from=build /opt/cn_p2_simple_ws /opt/cn_p2_simple_ws
+COPY --from=build /opt/practica2c_grupo5 /opt/practica2c_grupo5
 COPY entrypoint.sh /bin/entrypoint.sh
 
 RUN apt-get update -y \
@@ -24,11 +24,11 @@ RUN apt-get update -y \
     && apt-get clean \
     && groupadd -g 5000 -r wsuser \
     && useradd -r -M -u 5000 -g wsuser wsuser \
-    && chown -R wsuser:wsuser /opt/cn_p2_simple_ws \
+    && chown -R wsuser:wsuser /opt/practica2c_grupo5 \
     && chmod +x /bin/entrypoint.sh
     
 
-WORKDIR /opt/cn_p2_simple_ws
+WORKDIR /opt/practica2c_grupo5
 USER wsuser:wsuser
 
 EXPOSE 8000
