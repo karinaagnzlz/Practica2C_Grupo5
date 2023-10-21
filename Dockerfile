@@ -1,36 +1,41 @@
-FROM python:3.12-slim as build
+FROM ubuntu:18.04
 
-RUN apt-get update -y \
-    && apt-get install -y build-essential libpq-dev git \
-    && pip install virtualenv \
-    && virtualenv /opt/cn_p2_simple_ws/venv \
-    && . /opt/cn_p2_simple_ws/venv/bin/activate \
-    && pip install gunicorn
 
-COPY . /cn_p2_simple_ws
+# https://github.com/hellt/nginx-uwsgi-flask-alpine-docker
+LABEL maintainer "Tiernan Kennedy <tiernan@beatha.io>"
+LABEL description "Nginx + uWSGI + Flask based on Ubuntu 16.04 and managed by Supervisord"
 
-WORKDIR /cn_p2_simple_ws
+# Copy python requirements file
+COPY requirements.txt /tmp/requirements.txt
 
-RUN . /opt/cn_p2_simple_ws/venv/bin/activate \
-    && pip install .
+RUN apt-get update \
+  && apt-get install -y python3-pip python3-dev vim \
+  build-essential libssl-dev libffi-dev jq \
+  uwsgi nginx uwsgi-plugin-python3 supervisor \
+  && python3 -m pip install --upgrade pip \
+  && python3 -m pip install -r /tmp/requirements.txt
 
-FROM python:3.12-slim
+# to add nginx user
+RUN adduser --disabled-password --gecos '' nginx
 
-COPY --from=build /opt/cn_p2_simple_ws /opt/cn_p2_simple_ws
-COPY entrypoint.sh /bin/entrypoint.sh
+# Copy the Nginx global conf
+COPY dockerconf/nginx.conf /etc/nginx/
 
-RUN apt-get update -y \
-    && apt-get install -y libpq5\
-    && apt-get clean \
-    && groupadd -g 5000 -r wsuser \
-    && useradd -r -M -u 5000 -g wsuser wsuser \
-    && chown -R wsuser:wsuser /opt/cn_p2_simple_ws \
-    && chmod +x /bin/entrypoint.sh
-    
+# Copy the Flask Nginx site conf
+COPY dockerconf/flask-site-nginx.conf /etc/nginx/conf.d/
 
-WORKDIR /opt/cn_p2_simple_ws
-USER wsuser:wsuser
+# Copy the base uWSGI ini file to enable default dynamic uwsgi process number
+COPY dockerconf/uwsgi.ini /etc/uwsgi/
 
-EXPOSE 8000
+# Custom Supervisord config
+COPY dockerconf/supervisord.conf /etc/supervisord.conf
 
-ENTRYPOINT ["entrypoint.sh"]
+# Add demo app
+COPY ./ /app
+WORKDIR /app
+
+EXPOSE 80
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+
+
