@@ -21,7 +21,10 @@ class User(db.Model):
 
 db.create_all()
 
-
+# Ruta de ejemplo
+@app.route('/hola')
+def hello_world():
+    return jsonify(message='Hola, mundo Flask!')
 
 # Ruta de status
 @app.route('/status', methods=['GET'])
