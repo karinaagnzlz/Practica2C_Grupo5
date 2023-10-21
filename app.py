@@ -6,8 +6,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
 db = SQLAlchemy(app)
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=4000)
+
 
 ##Creando la migracion
 
@@ -123,7 +122,3 @@ def partial_update_user(id):
     return make_response(jsonify({'message': 'user not found'}), 404)
   except Exception as e:
     return make_response(jsonify({'message': 'error updating user'}), 500)
-
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=4000)
