@@ -1,15 +1,11 @@
-from flask import Flask
-from flask_restful import Api, Resource
+from flask import Flask, jsonify
 
 app = Flask(__name__)
-api = Api(app)
 
-# Ruta de ejemplo utilizando Flask-RESTful
-class HelloWorld(Resource):
-    def get(self):
-        return {'message': 'Hola, mundo Flask-RESTful!'}
-
-api.add_resource(HelloWorld, '/hello')
+# Ruta de ejemplo
+@app.route('/')
+def hello_world():
+    return jsonify(message='Hola, mundo Flask!')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
