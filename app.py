@@ -22,6 +22,7 @@ class User(db.Model):
 db.create_all()
 
 
+
 # Ruta de status
 @app.route('/status', methods=['GET'])
 def test():
@@ -30,8 +31,19 @@ def test():
 
 
 
-
 # tomar todos los directorios
+
+# get directorio
+@app.route('/directories', methods=['GET'])
+def get_users():
+  try:
+    users = User.query.all()
+    return make_response(jsonify([user.json() for user in users]), 200)
+  except e:
+    return make_response(jsonify({'message': 'error getting users'}), 500)
+
+
+# post directorio
 @app.route('/directories', methods=['POST'])
 def create_user():
   try:
@@ -44,15 +56,8 @@ def create_user():
     return make_response(jsonify({'message': 'error creating user'}), 500)
 
 
-@app.route('/directories', methods=['GET'])
-def get_users():
-  try:
-    users = User.query.all()
-    return make_response(jsonify([user.json() for user in users]), 200)
-  except e:
-    return make_response(jsonify({'message': 'error getting users'}), 500)
 
-# get a user by id
+# get directorio por id
 @app.route('/directories/<int:id>', methods=['GET'])
 def get_user(id):
   try:
@@ -63,7 +68,9 @@ def get_user(id):
   except e:
     return make_response(jsonify({'message': 'error getting user'}), 500)
 
-# update a user
+
+
+# update directorio por id
 @app.route('/directories/<int:id>', methods=['PUT'])
 def update_user(id):
   try:
@@ -78,7 +85,9 @@ def update_user(id):
   except e:
     return make_response(jsonify({'message': 'error updating user'}), 500)
 
-# delete a user
+
+
+# delete directorio por id
 @app.route('/directories/<int:id>', methods=['DELETE'])
 def delete_user(id):
   try:
@@ -90,3 +99,22 @@ def delete_user(id):
     return make_response(jsonify({'message': 'user not found'}), 404)
   except e:
     return make_response(jsonify({'message': 'error deleting user'}), 500)
+
+
+
+##patch directorio por id
+@app.route('/directories/<int:id>', methods=['PATCH'])
+def partial_update_user(id):
+  try:
+    user = User.query.filter_by(id=id).first()
+    if user:
+      data = request.get_json()
+      if 'username' in data:
+        user.username = data['username']
+      if 'email' in data:
+        user.email = data['email']
+      db.session.commit()
+      return make_response(jsonify({'message': 'user partially updated'}), 200)
+    return make_response(jsonify({'message': 'user not found'}), 404)
+  except Exception as e:
+    return make_response(jsonify({'message': 'error updating user'}), 500)
