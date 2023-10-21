@@ -1,22 +1,20 @@
-version: '3'
+db:
+  image: mongo:3.2
+  expose:
+    - 27017
+web:
+  build: .
+  command: gunicorn -b 0.0.0.0:8000 manage:app
+  volumes:
+    - .:/code
+  expose:
+    - 8000
+  ports:
+    - "8000:8000"
+  links:
+    - db
+  environment:
+    - HOST=0.0.0.0
+    - PORT=8000
+    - DATABASE_HOST=db
 
-services:
-  db:
-    image: postgres:latest
-    container_name: my_postgres_db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: practica2b_grupo5
-    ports:
-      - "5432:5432"
-
-  web:
-    build: .
-    container_name: flask_app_practica2b_grupo5
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@db/practica2b_grupo5
