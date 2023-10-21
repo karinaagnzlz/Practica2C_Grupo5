@@ -1,16 +1,22 @@
-# This file starts the WSGI web application.
-# - Developers can run it from the command line: python runserver.py
-
-from app import create_app
-
-app = create_app()
+#!/usr/bin/env python
+"""Django's command-line utility for administrative tasks."""
+import os
+import sys
 
 
-# Start a development web server if executed from the command line
-if __name__ == "__main__":
-    # Manage the command line parameters such as:
-    # - python manage.py runserver
-    # - python manage.py db
-    from app import manager
+def main():
+    """Run administrative tasks."""
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cn_p2_simple_ws.settings')
+    try:
+        from django.core.management import execute_from_command_line
+    except ImportError as exc:
+        raise ImportError(
+            "Couldn't import Django. Are you sure it's installed and "
+            "available on your PYTHONPATH environment variable? Did you "
+            "forget to activate a virtual environment?"
+        ) from exc
+    execute_from_command_line(sys.argv)
 
-    manager.run()
+
+if __name__ == '__main__':
+    main()
