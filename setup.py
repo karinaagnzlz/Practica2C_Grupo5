@@ -5,7 +5,7 @@ from setuptools import find_packages
 
 
 def get_version():
-    with open("Practica2C_Grupo5/__init__.py") as f:
+    with open("practica2c_grupo5_simple_ws/__init__.py") as f:
         for line in f:
             if line.startswith("__version__"):
                 return eval(line.split("=")[-1])
@@ -23,9 +23,9 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 setup(
-    name="Practica2C_Grupo5",
+    name="practica2c_grupo5_simple_ws",
     version=get_version(),
-    description="Practica2C_Grupo5",
+    description="practica2c_grupo5_simple_ws",
     long_description=readme,
     author="Rómulo Rodríguez",
     packages=find_packages(),
