@@ -1,27 +1,29 @@
 version: '3'
 
 services:
+  # Servicio para la base de datos PostgreSQL
   my_postgres_db:
-    image: postgres:15.4-alpine
+    image: postgres:15.4-alpine # Le dice al Docker que utilice la imagen oficial de PostgreSQL versión 15.4 
     container_name: my_postgres_db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: practica2b_grupo5
     ports:
-      - "5434:5432"
+      - "5434:5432" # Mapea el puerto 5432 del contenedor al puerto 5434 del host
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data # Utiliza el volumen pgdata para persistir los datos de la base de datos
 
+  # Servicio para la aplicación Flask
   flask_app:
     container_name: flask_app_practica2b_grupo5
-    build: .
+    build: . # Utiliza el contexto actual (donde está este archivo Docker-compose)
     ports:
-      - "4000:4000"
+      - "4000:4000" # Mapea el puerto 4000 del contenedor al puerto 4000 del host
     environment:
-      DB_URL: postgresql://postgres:postgres@my_postgres_db/practica2b_grupo5
+      DB_URL: postgresql://postgres:postgres@my_postgres_db/practica2b_grupo5  # Configura la URL de la base de datos para la aplicación
     depends_on:
-      - my_postgres_db
+      - my_postgres_db # Establece una dependencia, asegurando que la base de datos esté disponible antes de iniciar la aplicación
 
 volumes:
-  pgdata: {}
+  pgdata: {} # Define un volumen llamado pgdata para persistir los datos de PostgreSQL
