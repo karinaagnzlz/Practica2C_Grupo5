@@ -13,6 +13,10 @@ services:
       - "5434:5432" # Mapea el puerto 5432 del contenedor al puerto 5434 del host
     volumes:
       - pgdata:/var/lib/postgresql/data # Utiliza el volumen pgdata para persistir los datos de la base de datos
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      start_period: 10s
+
 
   # Servicio para la aplicación Flask
   flask_app:
@@ -21,7 +25,7 @@ services:
     container_name: flask_app_practica2b_grupo5
     
     ports:
-      - "4000:4000" # Mapea el puerto 4000 del contenedor al puerto 4000 del host
+      - "8083:8000" # Mapea el puerto 8083 del contenedor al puerto 8000 del host
     environment:
       DB_URL: postgresql://postgres:postgres@my_postgres_db/practica2b_grupo5  # Configura la URL de la base de datos para la aplicación
     depends_on:

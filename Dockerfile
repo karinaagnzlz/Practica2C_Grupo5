@@ -12,8 +12,8 @@ RUN pip install -r requirements.txt
 # Copia los archivos de la aplicación al directorio de trabajo
 COPY . .
 
-# Expone el puerto 400 para acceder a la aplicación
-EXPOSE 4000
+# Expone el puerto 4000 para acceder a la aplicación
+EXPOSE 8000
 
 # Comando para ejecutar la aplicación Flask
 CMD [ "flask", "run", "--host=0.0.0.0","--port=4000"]
