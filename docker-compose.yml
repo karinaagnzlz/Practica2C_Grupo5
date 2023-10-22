@@ -25,7 +25,7 @@ services:
     container_name: flask_app_practica2b_grupo5
     
     ports:
-      - "8083:8000" # Mapea el puerto 8083 del contenedor al puerto 8000 del host
+      - "5000:5000" # Mapea el puerto 8083 del contenedor al puerto 8000 del host
     environment:
       DB_URL: postgresql://postgres:postgres@my_postgres_db/practica2b_grupo5  # Configura la URL de la base de datos para la aplicación
     depends_on:
