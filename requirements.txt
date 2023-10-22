@@ -1,0 +1,3 @@
+flask # La versión puede variar
+psycopg2-binary # Para interactuar con PostgreSQL desde Flask
+Flask-SQLAlchemy # Una biblioteca ORM para trabajar con bases de datos
