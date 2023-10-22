@@ -6,27 +6,31 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
 db = SQLAlchemy(app)
 
-@app.route("/summary", methods=['GET'])
-def get_books():
-    return jsonify(jsonify({'response': 'pong'}))
+class User(db.Model):
+    __tablename__ = 'users'
 
-@app.route('/your-api/')
-def empty_view(self):
-    content = {'your content here'}
-    return content, status.HTTP_201_CREATED
+    id = db.Column(db.Integer, auto_created=True, primary_key=True, serialize=False)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def json(self):
+        return {'id': self.id,'name': self.name, 'email': self.email}
+
+db.create_all()
+
 
 # creando el status
-@app.route('/status', methods=['GET'])
+@app.route('/status/', methods=['GET'])
 def status():
   return make_response(jsonify({'response': 'pong'}), 200)
 
 
 # create a user
-@app.route('/users', methods=['POST'])
+@app.route('/directories/', methods=['POST'])
 def create_user():
   try:
     data = request.get_json()
-    new_user = User(username=data['username'], email=data['email'])
+    new_user = User(name=data['name'], email=data['email'])
     db.session.add(new_user)
     db.session.commit()
     return make_response(jsonify({'message': 'user created'}), 201)
@@ -34,7 +38,7 @@ def create_user():
     return make_response(jsonify({'message': 'error creating user'}), 500)
 
 # get all users
-@app.route('/users', methods=['GET'])
+@app.route('/directories/', methods=['GET'])
 def get_users():
   try:
     users = User.query.all()
@@ -43,7 +47,7 @@ def get_users():
     return make_response(jsonify({'message': 'error getting users'}), 500)
 
 # get a user by id
-@app.route('/users/<int:id>', methods=['GET'])
+@app.route('/directories/<int:id>', methods=['GET'])
 def get_user(id):
   try:
     user = User.query.filter_by(id=id).first()
@@ -54,13 +58,13 @@ def get_user(id):
     return make_response(jsonify({'message': 'error getting user'}), 500)
 
 # update a user
-@app.route('/users/<int:id>', methods=['PUT'])
+@app.route('/directories/<int:id>', methods=['PUT'])
 def update_user(id):
   try:
     user = User.query.filter_by(id=id).first()
     if user:
       data = request.get_json()
-      user.username = data['username']
+      user.name = data['name']
       user.email = data['email']
       db.session.commit()
       return make_response(jsonify({'message': 'user updated'}), 200)
@@ -69,7 +73,7 @@ def update_user(id):
     return make_response(jsonify({'message': 'error updating user'}), 500)
 
 # delete a user
-@app.route('/users/<int:id>', methods=['DELETE'])
+@app.route('/directories/<int:id>', methods=['DELETE'])
 def delete_user(id):
   try:
     user = User.query.filter_by(id=id).first()
@@ -82,15 +86,15 @@ def delete_user(id):
     return make_response(jsonify({'message': 'error deleting user'}), 500)
 
 ##patch directorio por id
-@app.route('/users/<int:id>', methods=['PATCH'])
+@app.route('/directories/<int:id>', methods=['PATCH'])
 def partial_update_user(id):
   try:
     user = User.query.filter_by(id=id).first()
     if user:
       data = request.get_json()
-      if 'username' in data:
-        user.username = data['username']
-      if 'email' in data:
+      if 'name' in data:
+        user.name = data['name']
+      if 'emails' in data:
         user.email = data['email']
       db.session.commit()
       return make_response(jsonify({'message': 'user partially updated'}), 200)
