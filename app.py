@@ -5,7 +5,7 @@ app = Flask(__name__)
 # Ruta de ejemplo
 @app.route('/')
 def hello_world():
-    return jsonify(message='Hola, mundo Flask!')
+    return jsonify({'response': 'pong'})
 
 # Ruta de status
 @app.route('/status', methods=['GET'])
