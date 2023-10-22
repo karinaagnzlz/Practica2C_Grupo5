@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
 db = SQLAlchemy(app)
 
-@app.route('/books', methods=['GET'])
+@app.route("/summary", methods=['GET'])
 def get_books():
     return jsonify(jsonify({'response': 'pong'}))
 
