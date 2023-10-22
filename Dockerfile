@@ -1,19 +1,19 @@
 # Usa la imagen oficial de Python
 FROM python:3.9
 
-# Establece el directorio de trabajo
+# Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
 COPY requirements.txt ./
 
-# Instala las dependencias
+# Instala las dependencias necesarias
 RUN pip install -r requirements.txt
 
-# Copia los archivos de la aplicación, incluyendo el archivo requirements.txt
+# Copia los archivos de la aplicación al directorio de trabajo
 COPY . .
 
-# Expón el puerto de la aplicación
+# Expone el puerto 400 para acceder a la aplicación
 EXPOSE 4000
 
-# Comando para ejecutar la aplicación
+# Comando para ejecutar la aplicación Flask
 CMD [ "flask", "run", "--host=0.0.0.0","--port=4000"]
