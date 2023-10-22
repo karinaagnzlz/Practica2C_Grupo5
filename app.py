@@ -2,12 +2,11 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
-db = SQLAlchemy(app)
+app = Flask(__name__) # Crear una instancia de la aplicación Flask
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL') # Configurar la URI de la base de datos desde la variable de entorno 'DB_URL'
+db = SQLAlchemy(app) # Crear una instancia de SQLAlchemy y asociarla a la aplicación
 
-
-# Creando la tabla en la base de datos
+# Crear la tabla en la base de datos utilizando el modelo Directory
 class Directory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), nullable=False)
@@ -19,7 +18,8 @@ class Directory(db.Model):
             'name': self.name,
             'emails': list(self.emails)
         }
-        
+
+# Crear las tablas en la base de datos
 with app.app_context():
     db.create_all()
 
@@ -61,14 +61,14 @@ def create_directory():
 def manage_directory(directory_id):
      directory = Directory.query.get(directory_id)
     
-     if directory is None:
+     if directory is None:  # Si el directorio no existe, devolver un mensaje de error y el código de estado 404
          return jsonify({'message': 'Directory not found'}), 404
     
-     if request.method == 'GET':
+     if request.method == 'GET': # Si la solicitud es GET, devolver la representación serializada del directorio y el código de estado 200
         response = jsonify(directory.serialize())
         return make_response(response, 200)
     
-     if request.method == 'PUT':
+     if request.method == 'PUT': # Si la solicitud es PUT, actualizar el directorio con los datos proporcionados y devolver la representación actualizada
         data = request.get_json()
         directory.name = data.get('name')
         directory.emails = data.get('emails')
@@ -76,7 +76,7 @@ def manage_directory(directory_id):
         response = jsonify(directory.serialize())
         return make_response(response, 200)
     
-     if request.method == 'PATCH':
+     if request.method == 'PATCH':  # Si la solicitud es PATCH, actualizar selectivamente los campos del directorio y devolver la representación actualizada
         data = request.get_json()
         if 'name' in data:
             directory.name = data['name']
@@ -86,7 +86,7 @@ def manage_directory(directory_id):
         response = jsonify(directory.serialize())
         return make_response(response, 200)
     
-     if request.method == 'DELETE':
+     if request.method == 'DELETE': # Si la solicitud es DELETE, eliminar el directorio y devolver un mensaje de éxito
         db.session.delete(directory)
         db.session.commit()
         response = jsonify({'message': 'Directory deleted'})
