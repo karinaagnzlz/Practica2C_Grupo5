@@ -5,9 +5,9 @@ services:
     image: postgres:12
     container_name: my_postgres_db
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=practica2b_grupo5
+      - POSTGRES_USER : postgres
+      - POSTGRES_PASSWORD : postgres
+      - POSTGRES_DB : practica2b_grupo5
     ports:
       - "5434:5432"
     volumes:
@@ -19,7 +19,7 @@ services:
     ports:
       - "4000:4000"
     environment:
-      DB_URL=postgresql://postgres:postgres@my_postgres_db/practica2b_grupo5
+      DB_URL : postgresql://postgres:postgres@my_postgres_db/practica2b_grupo5
     depends_on:
       - my_postgres_db
 

@@ -20,7 +20,7 @@ with app.app_context():
     db.create_all()
 
 # Endpoint de estado
-@app.route('/status', methods=['GET'])
+@app.route('/status/', methods=['GET'])
 def get_status():
     return make_response(jsonify({'message:':'pong'}),200)
 
