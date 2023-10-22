@@ -3,21 +3,21 @@ from flask_sqlalchemy import SQLAlchemy
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@my_postgres_db/practica2b_grupo5'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
 db = SQLAlchemy(app)
 
 
-# # Creando la tabla en la base de datos
-# class Directory(db.Model):
-#         id = db.Column(db.Integer, primary_key=True)
-#         name = db.Column(db.String(500), nullable=False, unique=True)
-#         emails = db.Column(db.ARRAY(db.String), nullable=False, unique=True)
+# Creando la tabla en la base de datos
+class Directory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(500), nullable=False, unique=True)
+    emails = db.Column(db.ARRAY(db.String), nullable=False, unique=True)
 
-#         def json(self):
-#             return {'id':self.id, 'name':self.name, 'emails':list(self.emails)}
+    def json(self):
+        return {'id':self.id, 'name':self.name, 'emails':list(self.emails)}
         
-# db.create_all()
-
+with app.app_context():
+    db.create_all()
 
 # Endpoint de estado
 @app.route('/status', methods=['GET'])
