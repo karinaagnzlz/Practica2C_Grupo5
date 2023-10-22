@@ -8,7 +8,7 @@ services:
     ports:
       - "4000:4000"
     environment:
-      - DB_URL=postgresql://postgres:postgres@flask_db:5432/postgres
+      - DB_URL=postgresql://postgres:postgres@grupo5_db:5432/postgres
     depends_on:
       - grupo5_db
   grupo5_db:
