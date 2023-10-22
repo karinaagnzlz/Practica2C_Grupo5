@@ -1,0 +1,5 @@
+Flask
+Werkzeug
+Flask-RESTful # Flask-RESTful para la creación de servicios REST
+psycopg2-binary # Para interactuar con PostgreSQL desde Flask 
+Flask-SQLAlchemy
