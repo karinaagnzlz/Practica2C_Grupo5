@@ -1,115 +1,75 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify, make_response
+from flask_sqlalchemy import SQLAlchemy
+from os import environ
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
+db = SQLAlchemy(app)
 
-# Ruta de ejemplo
-@app.route('/')
-def hello_world():
-    return jsonify(message='Hola, mundo Flask!')
 
-# Ruta de status
+# Creando la tabla en la base de datos
+class Directory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(500), nullable=False, unique=True)
+    emails = db.Column(db.ARRAY(db.String), nullable=False, unique=True)
+
+    def json(self):
+        return {'id':self.id, 'name':self.name, 'emails':list(self.emails)}
+        
+with app.app_context():
+    db.create_all()
+
+# Endpoint de estado
 @app.route('/status', methods=['GET'])
-def test():
-  return make_response(jsonify({'response': 'pong'}), 200)
+def get_status():
+    return make_response(jsonify({'message:':'pong'}),200)
 
+# # Endpoint para listar todos los directorios
+# @app.route('/directories/', methods=['GET'])
+# def get_directories():
+#     with app.app_context():
+#         directories = Directory.query.all()
+#     return jsonify([directory.serialize() for directory in directories])
 
+# # Endpoint para crear un directorio
+# @app.route('/directories/', methods=['POST'])
+# def create_directory():
+#     data = request.get_json()
+#     name = data.get('name')
+#     emails = data.get('emails')
+#     directory = Directory(name=name, emails=emails)
+#     db.session.add(directory)
+#     db.session.commit()
+#     return jsonify(directory.serialize()), 201
 
-
-# tomar todos los directorios
-
-# get directorio
-@app.route('/directories', methods=['GET'])
-def get_users():
-  try:
-    users = User.query.all()
-    return make_response(jsonify([user.json() for user in users]), 200)
-  except e:
-    return make_response(jsonify({'message': 'error getting users'}), 500)
-
-
-# post directorio
-@app.route('/directories', methods=['POST'])
-def create_user():
-  try:
-    data = request.get_json()
-    new_user = User(username=data['username'], email=data['email'])
-    db.session.add(new_user)
-    db.session.commit()
-    return make_response(jsonify({'message': 'user created'}), 201)
-  except e:
-    return make_response(jsonify({'message': 'error creating user'}), 500)
-
-
-
-# get directorio por id
-@app.route('/directories/<int:id>', methods=['GET'])
-def get_user(id):
-  try:
-    user = User.query.filter_by(id=id).first()
-    if user:
-      return make_response(jsonify({'user': user.json()}), 200)
-    return make_response(jsonify({'message': 'user not found'}), 404)
-  except e:
-    return make_response(jsonify({'message': 'error getting user'}), 500)
-
-
-
-# update directorio por id
-@app.route('/directories/<int:id>', methods=['PUT'])
-def update_user(id):
-  try:
-    user = User.query.filter_by(id=id).first()
-    if user:
-      data = request.get_json()
-      user.username = data['username']
-      user.email = data['email']
-      db.session.commit()
-      return make_response(jsonify({'message': 'user updated'}), 200)
-    return make_response(jsonify({'message': 'user not found'}), 404)
-  except e:
-    return make_response(jsonify({'message': 'error updating user'}), 500)
-
-
-
-# delete directorio por id
-@app.route('/directories/<int:id>', methods=['DELETE'])
-def delete_user(id):
-  try:
-    user = User.query.filter_by(id=id).first()
-    if user:
-      db.session.delete(user)
-      db.session.commit()
-      return make_response(jsonify({'message': 'user deleted'}), 200)
-    return make_response(jsonify({'message': 'user not found'}), 404)
-  except e:
-    return make_response(jsonify({'message': 'error deleting user'}), 500)
-
-
-
-##patch directorio por id
-@app.route('/directories/<int:id>', methods=['PATCH'])
-def partial_update_user(id):
-  try:
-    user = User.query.filter_by(id=id).first()
-    if user:
-      data = request.get_json()
-      if 'username' in data:
-        user.username = data['username']
-      if 'email' in data:
-        user.email = data['email']
-      db.session.commit()
-      return make_response(jsonify({'message': 'user partially updated'}), 200)
-    return make_response(jsonify({'message': 'user not found'}), 404)
-  except Exception as e:
-    return make_response(jsonify({'message': 'error updating user'}), 500)
-
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=4000)
-
-
-
-
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+# # Endpoint para obtener, actualizar y eliminar un directorio por su ID
+# @app.route('/directories/<int:directory_id>', methods=['GET', 'PUT', 'PATCH', 'DELETE'])
+# def manage_directory(directory_id):
+#     directory = Directory.query.get(directory_id)
+    
+#     if directory is None:
+#         return jsonify({'message': 'Directory not found'}), 404
+    
+#     if request.method == 'GET':
+#         return jsonify(directory.serialize())
+    
+#     if request.method == 'PUT':
+#         data = request.get_json()
+#         directory.name = data.get('name')
+#         directory.emails = data.get('emails')
+#         db.session.commit()
+#         return jsonify(directory.serialize())
+    
+#     if request.method == 'PATCH':
+#         data = request.get_json()
+#         if 'name' in data:
+#             directory.name = data['name']
+#         if 'emails' in data:
+#             directory.emails = data['emails']
+#         db.session.commit()
+#         return jsonify(directory.serialize())
+    
+#     if request.method == 'DELETE':
+#         db.session.delete(directory)
+#         db.session.commit()
+#         return jsonify({'message': 'Directory deleted'})
