@@ -24,12 +24,13 @@ with app.app_context():
 def get_status():
     return make_response(jsonify({'message:':'pong'}),200)
 
-# # Endpoint para listar todos los directorios
-# @app.route('/directories/', methods=['GET'])
-# def get_directories():
-#     with app.app_context():
-#         directories = Directory.query.all()
-#     return jsonify([directory.serialize() for directory in directories])
+# Endpoint para listar todos los directorios
+@app.route('/directories', methods=['GET'])
+def get_directories():
+    directories = Directory.query.all()
+    serialized_directories = [directory.serialize() for directory in directories]
+    response = jsonify(serialized_directories)
+    return make_response(response, 200)
 
 # # Endpoint para crear un directorio
 # @app.route('/directories/', methods=['POST'])
