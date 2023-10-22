@@ -16,14 +16,18 @@ services:
 
   # Servicio para la aplicación Flask
   flask_app:
-    container_name: flask_app_practica2b_grupo5
     build: . # Utiliza el contexto actual (donde está este archivo Docker-compose)
+    restart: always
+    container_name: flask_app_practica2b_grupo5
+    
     ports:
       - "4000:4000" # Mapea el puerto 4000 del contenedor al puerto 4000 del host
     environment:
       DB_URL: postgresql://postgres:postgres@my_postgres_db/practica2b_grupo5  # Configura la URL de la base de datos para la aplicación
     depends_on:
-      - my_postgres_db # Establece una dependencia, asegurando que la base de datos esté disponible antes de iniciar la aplicación
+      my_postgres_db: # Establece una dependencia, asegurando que la base de datos esté disponible antes de iniciar la aplicación
+            condition: service_healthy
+            restart: true
 
 volumes:
   pgdata: {} # Define un volumen llamado pgdata para persistir los datos de PostgreSQL
