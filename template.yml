@@ -6,7 +6,7 @@ metadata:
     description: >-
       Platilla de despliegue para cn-p2-simple-ws
     tags: "flask,python"
-    openshift.io/documentation-url: "https://github.com/yjruiz2002/Dockerfile_Aguilar_Ruiz.git"
+    openshift.io/documentation-url: "https://github.com/karinaagnzlz/Practica2C_Grupo5.git"
     openshift.io/suport-url: "https://github.com/karinaagnzlz/Practica2C_Grupo5.git"
 
 parameters:
