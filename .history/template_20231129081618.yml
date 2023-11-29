@@ -1,13 +1,13 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: cn-p2-simple-ws-template
+  name: Practica2-Grupo5-template
   annotations:
     description: >-
-      Platilla de despliegue para cn-p2-simple-ws
+      Platilla de despliegue para Practica2-Grupo5-template
     tags: "flask,python"
-    openshift.io/documentation-url: "https://github.com/yjruiz2002/Dockerfile_Aguilar_Ruiz.git"
-    openshift.io/suport-url: "https://github.com/karinaagnzlz/Practica2C_Grupo5.git"
+    openshift.io/documentation-url: "https://github.com/karinaagnzlz/Practica2C_Grupo5"
+    openshift.io/suport-url: "https://github.com/karinaagnzlz/Practica2C_Grupo5"
 
 parameters:
   - name: APP_NAME
@@ -48,7 +48,7 @@ objects:
       db_pwd: '${DB_PWD}'
       db_usr: '${DB_USR}'
       db_name: '${DB_NAME}'
-      db_url: postgresql://${DB_USR}:${DB_PWD}@${APP_NAME}-pgsql.${PROJECT_NAME}.svc:5432/${DB_NAME}
+      db_url: postgresql://${DB_USR}:${DB_PWD}@${APP_NAME}-pgsql.${PROJECT_NAME}.svc/${DB_NAME}
 
   - kind: Service
     apiVersion: v1
@@ -67,7 +67,7 @@ objects:
     metadata:
       labels:
         app: ${APP_NAME}-appserver
-      name: ${APP_NAME}-appserver
+        name: ${APP_NAME}-appserver
     spec:
       host: ${DOMAIN_NAME}
       port:
